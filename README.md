@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Frontend React Application
 
 ## Overview
@@ -53,3 +54,6 @@ frontend/
 - React Context for authentication
 - Local state for component-specific data
 - Axios for API communication with automatic token handling
+=======
+# PrimeTradeAI1_Frontend
+>>>>>>> d90c7c54af2eb0206c3d3c5855315eca845141ee
