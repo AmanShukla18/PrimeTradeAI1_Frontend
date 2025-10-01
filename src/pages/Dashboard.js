@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import apiClient from '../utils/axios';
 import Navbar from '../components/Navbar';
 import NoteCard from '../components/NoteCard';
 import NoteModal from '../components/NoteModal';
@@ -42,7 +42,7 @@ const Dashboard = () => {
 
   const fetchNotes = async () => {
     try {
-      const response = await axios.get('/api/notes');
+      const response = await apiClient.get('/api/notes');
       setNotes(response.data);
     } catch (error) {
       console.error('Error fetching notes:', error);
@@ -83,14 +83,14 @@ const Dashboard = () => {
     try {
       if (editingNote) {
         // Update existing note
-        const response = await axios.put(`/api/notes/${editingNote._id}`, noteData);
+        const response = await apiClient.put(`/api/notes/${editingNote._id}`, noteData);
         setNotes(notes.map(note => 
           note._id === editingNote._id ? response.data.note : note
         ));
         setMessage('✅ Note updated successfully');
       } else {
         // Create new note
-        const response = await axios.post('/api/notes', noteData);
+        const response = await apiClient.post('/api/notes', noteData);
         setNotes([response.data.note, ...notes]);
         setMessage('✅ Note created successfully');
       }
@@ -110,7 +110,7 @@ const Dashboard = () => {
   const handleDeleteNote = async (noteId) => {
     if (window.confirm('Are you sure you want to delete this note?')) {
       try {
-        await axios.delete(`/api/notes/${noteId}`);
+        await apiClient.delete(`/api/notes/${noteId}`);
         setNotes(notes.filter(note => note._id !== noteId));
         setMessage('✅ Note deleted successfully');
         

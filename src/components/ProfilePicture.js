@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import axios from 'axios';
+import apiClient from '../utils/axios';
 
 const ProfilePicture = ({ user, onUpdate, size = 'large' }) => {
   const [uploading, setUploading] = useState(false);
@@ -27,7 +27,7 @@ const ProfilePicture = ({ user, onUpdate, size = 'large' }) => {
       const formData = new FormData();
       formData.append('profilePicture', file);
 
-      const response = await axios.post('/api/user/profile-picture', formData, {
+      const response = await apiClient.post('/api/user/profile-picture', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -44,7 +44,7 @@ const ProfilePicture = ({ user, onUpdate, size = 'large' }) => {
 
   const deleteProfilePicture = async () => {
     try {
-      const response = await axios.delete('/api/user/profile-picture');
+      const response = await apiClient.delete('/api/user/profile-picture');
       onUpdate(response.data.user);
       setShowMenu(false);
     } catch (error) {
@@ -55,7 +55,15 @@ const ProfilePicture = ({ user, onUpdate, size = 'large' }) => {
 
   const getProfileImageUrl = () => {
     if (user?.profilePicture) {
-      return `http://localhost:5000${user.profilePicture}`;
+      // Check if it's a base64 image (starts with data:)
+      if (user.profilePicture.startsWith('data:')) {
+        return user.profilePicture;
+      }
+      // Fallback for old file-based images
+      const baseUrl = process.env.NODE_ENV === 'production' 
+        ? 'https://your-backend-domain.vercel.app' 
+        : 'http://localhost:5000';
+      return `${baseUrl}${user.profilePicture}`;
     }
     return null;
   };
